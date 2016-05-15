@@ -14,9 +14,7 @@
 #define UTIL_H
 
 //Some Includes
-#include <stdbool.h>
-#include <pthread.h>
-#include <stdlib.h>
+#include "include.h"
 
 bool should_run = true;
 

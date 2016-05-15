@@ -1,3 +1,5 @@
+#include "wait.h"
+
 sem_t* reserveChair()
 {
   if(chairs_occupied == NUMBER_CHAIRS)
@@ -25,5 +27,16 @@ sem_t* serveChair()
     chairs_front = RES_CHAIRS_INDEX(chairs_front + 1);
     chairs_occupied--;
     return to_return;
+  }
+}
+
+void initialize_semaphores()
+{
+  sem_init(&ta_finished_helping, 0, 0);
+  int i;
+  for(i = 0; i < NUMBER_CHAIRS; i++)
+  {
+    sem_init(&chairs[i], 0, 0);
+    sem_init(&chairs_turn[i], 0, 0);
   }
 }

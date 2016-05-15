@@ -15,12 +15,13 @@ void *ta_loop(void *param)
   sem_wait(&chairs[chairs_front]);                 //wait for the semaphore at th front of the queue to be signaled by a student
   LOCK_STATE;                                      //mutex protect the state of the chairs
   _sid = sids[front];
-  _sem = serveChair();
-  sem_post(&_sem);                                 //Come for help, dear student
+  sem_post(&chairs_turn[front]);                   //Come for help, dear student
+  serveChair();
   UNLOCK_STATE;                                   //unlocking mutex that protects the state of the chairs
   int _period = generateAPeriodOfTime();
   printf("[TA]: I am helping student #%d for time %d, the chairs are outside!", _sid, _period);
   sleep(_period);
+  sem_post(&ta_finished_helping);
   }
   printf("[TA]: I am out of service, simulation is done!\n");
 }
