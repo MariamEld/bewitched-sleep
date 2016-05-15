@@ -16,9 +16,7 @@
 //Some Includes
 #include "include.h"
 
-bool should_run = true;
-
-unsigned int seed_r = 42;
+unsigned int seed_r;
 
 #define MUTEXES_COUNT 2
 pthread_mutex_t mtxs[MUTEXES_COUNT];
@@ -31,8 +29,8 @@ pthread_mutex_t mtxs[MUTEXES_COUNT];
 #define RAND_MUTEX mtxs[0]
 #define CHAIR_STATE_MUTEX mtxs[1]
 
-#define LOCK_STATE pthread_mutex_lock(CHAIR_STATE_MUTEX)
-#define UNLOCK_STATE pthread_mutex_unlock(CHAIR_STATE_MUTEX)
+#define LOCK_STATE pthread_mutex_lock(&CHAIR_STATE_MUTEX)
+#define UNLOCK_STATE pthread_mutex_unlock(&CHAIR_STATE_MUTEX)
 
 int generateAPeriodOfTime();
 

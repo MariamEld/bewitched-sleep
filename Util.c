@@ -19,14 +19,14 @@ void actOnMutexes(bool initialize_option)
   {
     if(initialize_option)
     {
-      if((_status = pthread_mutex_init(mtxs[i]), NULL) != 0)
+      if((_status = pthread_mutex_init(&mtxs[i], NULL) != 0))
       {
         fprintf(stderr, "Cannot initailize mutex at index %d and error code is %d\n", i, _status);
       }
     }
     else
     {
-      if((_status = pthread_mutex_destroy(mtxs[i])) != 0)
+      if((_status = pthread_mutex_destroy(&mtxs[i])) != 0)
       {
         fprintf(stderr, "Cannot initailize mutex at index %d and error code is %d\n", i, _status);
       }
@@ -47,9 +47,9 @@ void actOnMutexes(bool initialize_option)
  int generateAPeriodOfTime()
  {
    int generated_rand;
-   pthread_mutex_lock(RAND_MUTEX);
+   pthread_mutex_lock(&RAND_MUTEX);
    generated_rand = rand_r(&seed_r);
-   pthread_mutex_unlock(RAND_MUTEX);
+   pthread_mutex_unlock(&RAND_MUTEX);
    return ( generated_rand % MAXIMUM_TIME_ALLOWED + 1);
  }
 

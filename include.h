@@ -6,7 +6,21 @@
 #include <stdlib.h>
 #include <semaphore.h>
 #include <stdio.h>
-
+#include <errno.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <regex.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <sys/wait.h>
 #define NUMBER_CHAIRS 3
+
+
+bool should_run;
+
 
 #endif

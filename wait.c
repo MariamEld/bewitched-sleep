@@ -10,7 +10,7 @@ sem_t* reserveChair()
   {
     chairs_rear = RES_CHAIRS_INDEX(chairs_rear + 1);
     chairs_occupied++;
-    return chairs[chairs_rear];
+    return &chairs[chairs_rear];
   }
 }
 
@@ -23,7 +23,7 @@ sem_t* serveChair()
   }
   else
   {
-    to_return = chairs[chairs_front];
+    to_return = &chairs[chairs_front];
     chairs_front = RES_CHAIRS_INDEX(chairs_front + 1);
     chairs_occupied--;
     return to_return;

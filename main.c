@@ -1,12 +1,11 @@
 
 
-#include "wait.h"
 #include "student.h"
-#include "ta.h"
 
 int* student_ids;
 pthread_t ta_;
 pthread_t* students_;
+
 
 void allocate(int _count)
 {
@@ -17,9 +16,18 @@ void allocate(int _count)
   	student_ids[i] = i + 1;
 }
 
+void init_()
+{
+  chairs_front = 0;
+  chairs_rear = -1;
+  chairs_occupied = 0;
+  should_run = true;
+  seed_r = 42;
+}
 
 int main(int argc, char** argv)
 {
+  init_();
   int i;
   //The interrupt signal
   signal(SIGINT, SIG_INT_HANDLER);

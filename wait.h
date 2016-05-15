@@ -5,14 +5,14 @@
 
 #define RES_CHAIRS_INDEX(x) ((x % NUMBER_CHAIRS))
 
-int chairs_front = 0;
-int chairs_rear = -1;
-int chairs_occupied = 0;
+int chairs_front;
+int chairs_rear;
+int chairs_occupied;
 
 sem_t chairs[NUMBER_CHAIRS];
 sem_t chairs_turn[NUMBER_CHAIRS];
 
-int sids[NUMBER_CHAIRS]
+int sids[NUMBER_CHAIRS];
 sem_t ta_finished_helping;
 
 //Get a waiting chair to sit in

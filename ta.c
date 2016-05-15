@@ -14,8 +14,8 @@ void *ta_loop(void *param)
   UNLOCK_STATE;                                   //unlocking mutex that protects the state of the chairs
   sem_wait(&chairs[chairs_front]);                 //wait for the semaphore at th front of the queue to be signaled by a student
   LOCK_STATE;                                      //mutex protect the state of the chairs
-  _sid = sids[front];
-  sem_post(&chairs_turn[front]);                   //Come for help, dear student
+  _sid = sids[chairs_front];
+  sem_post(&chairs_turn[chairs_front]);                   //Come for help, dear student
   serveChair();
   UNLOCK_STATE;                                   //unlocking mutex that protects the state of the chairs
   int _period = generateAPeriodOfTime();
