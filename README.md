@@ -35,6 +35,19 @@ We use a mutex to guard the usage of the pseudo-random number generator and use 
 ```
 
 ### System-state
+Changing the system state can be done in many ways. To make sure that two students cannot grab the same chair or ensure that other weird things will not happen, we use a mutex to guard critical sections that change the state of the system.
+```C
+LOCK_STATE; 				//#define LOCK_STATE pthread_mutex_lock(&CHAIR_STATE_MUTEX)
+//Change System State
+UNLOCK_STATE;				//#define UNLOCK_STATE pthread_mutex_unlock(&CHAIR_STATE_MUTEX)
+```
+#### Examples of behaviors that must be guarded due to changing/reading the system state include
+1. (En/De)queing from/into the waiting queue
+2. Writing the waiting/helping information to files or to the screen
+3. 
+
+**Each thread must ensure that they do not lock the mutex and go to sleep or wait for signals!!! Threads, please be considerate.**
+
 
 ### File-Writing
 We use a lock to control writing to the file across different threads.
@@ -45,3 +58,4 @@ pthread_rwlock_wrlock(&rwlock);				//Acquire the lock on the file
 WRITE_WHAT_IN_BUFFER;
 pthread_rwlock_unlock(&rwlock);				//Release the lock on the file
 ```
+**The function ```writeStatusToFile()``` must be called while a mutex is locked. Writing to the file also requires locking and unlocking the file lock**
