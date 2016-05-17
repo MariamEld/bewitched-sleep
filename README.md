@@ -16,30 +16,37 @@ A C solution to the sleeping TA problem, a version of the sleeping barber proble
 Assumption: We assume that a first person arriving will sit on a chair and then immediately will be invited for help.
 
 ### Variables
+
 We use a mix of global mutexes, flags, locks and semaphoes to satisfy the previously mentioned requirments.
-#### Volatile Flags
+
+#### Volatile Flags/Variables
+
+**Any changes to these must be guarded by the system state mutex.**
+
+1. ```should_run```: A flag that is true as long as no SIG_INT received.
+2. ```really_stop_nothing_to_do```: A flag that is raised when all students travel for the summer vacation. **This ensures that the TA does not keep sleeping**.
+3. ```ta_busy```: True if and only if the TA is helping someone.
+4. ```being_helped```: a positive student id if ```ta_busy``` and 0 otherwise.
 
 #### Mutexes
 
+1. ```RAND_MUTEX```: To avoid two threads accessing ```rand_r()``` at the same time.
+2. ```CHAIR_STATE_MUTEX```: To avoid two entities changing the system state at the same time and avoid confusion while reading the system state.
+
 #### Semaphores
-1. *Chairs*: We associate a semaphore with each chair. This association ensures that we can control the semaphore scheduling in a FIFO manner. Leaving it to the operating system does not guarantee a FIFO policy. When a **student** sits on a chair, they **wait** on the chair's corresponding semaphore. 
-2. *students_ready*:
+
+All semaphores are initialized to a value of 1 to make sure wait is not encountered until a signal is issued.
+
+1. ```Chairs```: We associate a semaphore with each chair. This association ensures that we can control the semaphore scheduling in a FIFO manner. Leaving it to the operating system does not guarantee a FIFO policy. When a **student** sits on a chair, they **wait** on the chair's corresponding semaphore. 
+2. ```students_ready```: A *student* *signals* this to the TA to let them know they need help if they either wait or arrive and they are sleeping. The TA sleeping means he is waiting on this signal. This signal is issued when SIG_INT is issued, but in a special manner by setting a volatile flag called ```really_stop_nothing_to_do```.
+3. ```ta_finished_helping```: is *signaled* when the *TA* is done because he determines the period of time. This must be *awaited* by and only be the *student being helped*.
+
 #### Read/Write Locks
 We use read/write locks to safely write to the SVG file that is shared by all the threads. Please see below for details.
 
-## Build, Start and Terminate
+### Halting
 
-To build, you either invoke build.sh or execute the following
-```
-gcc *.c -pthread -o sleeping-ta
-chmod +x sleeping-ta
-```
-To invoke the sleeping TA, you simply call the binary and pass the number of students
-```
-./sleeping-ta
-```
-To terminate the simulation safely, you pass a SIG_INT to the process. You can simply do so on your terminal if it is running in the foreground by simply pressing Ctrl + C.
-It is important to end the simulation safely to close file buffers, end threads safely and most importantly to let the students and TAs finish their jobs and not to interrupt programming, waiting, helping or sleeping(just kidding, a **SIG_INT would awake the TA, so that he can catch his flight to Paris.**)
+When halting, the flag ```should_run``` is set to false. The flag ```really_stop_nothing_to_do``` is set to true, but the latter setting seriously needs a mutex because it is a change of the state of the system.
 
 ## Thread Safety Concerns
 
@@ -77,6 +84,20 @@ pthread_rwlock_unlock(&rwlock);				//Release the lock on the file
 ```
 **The function ```writeStatusToFile()``` must be called while a mutex is locked. Writing to the file also requires locking and unlocking the file lock.**
 
+## Build, Start and Terminate
+
+To build, you either invoke build.sh or execute the following
+```
+gcc *.c -pthread -o sleeping-ta
+chmod +x sleeping-ta
+```
+To invoke the sleeping TA, you simply call the binary and pass the number of students
+```
+./sleeping-ta
+```
+To terminate the simulation safely, you pass a SIG_INT to the process. You can simply do so on your terminal if it is running in the foreground by simply pressing Ctrl + C.
+It is important to end the simulation safely to close file buffers, end threads safely and most importantly to let the students and TAs finish their jobs and not to interrupt programming, waiting, helping or sleeping(just kidding, a **SIG_INT would awake the TA, so that he can catch his flight to Paris.**)
+
 ## SVG Rendering
 If you choose to have 3 waiting chairs, we can reward you with an elegant SVG rendering feature. After you halt the simulation, you just open the SVG file that will be created in the same folder. The file can have a relatively large height, so you may want to zoom in.
 
@@ -91,4 +112,6 @@ If you choose to have 3 waiting chairs, we can reward you with an elegant SVG re
 5. Green: TA Serving someone
 
 <img src="https://raw.githubusercontent.com/decltypeme/bewitched-sleep/master/examples/1.svg">
+
+
 <img src="https://raw.githubusercontent.com/decltypeme/bewitched-sleep/master/examples/2.svg">
