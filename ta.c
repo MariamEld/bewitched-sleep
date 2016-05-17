@@ -6,7 +6,7 @@ void *ta_loop(void *param)
   int _sid;
   sem_t* _sem;
 
-  while(should_run) {
+  while(should_run || chairs_occupied) {
   //Some sleep if nothing to do
   LOCK_STATE;                                      //mutex protect the state of the chairs
   if(chairs_occupied == 0)                         //Go and look in the waiting room; WE DO NOT CARE IF SOMEONE ARRIVED AFTER WE LOOK. THEY SHOULD NOTIFY US.

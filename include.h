@@ -20,7 +20,7 @@
 #define NUMBER_CHAIRS 3
 
 
-bool should_run;
+bool volatile should_run;
 
 
 #endif

@@ -35,4 +35,5 @@ void *student_loop(void *param)
       printf("[#%d]: Tried to get help but couldnot due to chairs capacity, will return to programming\n", *_sid);
     }
   }
+  printf("[#%d]: I withdraw from the infinite semester\n", *_sid);
 }
