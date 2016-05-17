@@ -3,7 +3,7 @@ A C solution to the sleeping TA problem, a version of the sleeping barber proble
 
 ## System Requirments
 
-Unless no SIG_INT is signaled:
+Unless no SIG_INT is signaled
 
 1. If there are no students, the TA takes a nap.
 2. If a student comes while the TA is sleeping, they can signal him to awaken him.
