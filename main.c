@@ -31,6 +31,11 @@ void init_()
 
 int main(int argc, char** argv)
 {
+  if(argc != 2)
+  {
+    fprintf(stderr, "Invalid Parameters ... Exiting ...\n");
+    exit(1);
+  }
   init_();
   int i;
   //The interrupt signal
