@@ -37,11 +37,15 @@ void actOnMutexes(bool initialize_option)
  void initializeAllMutexes()
  {
    actOnMutexes(true);
+   if(pthread_rwlock_init(&rwlock, NULL) != 0)
+	fprintf(stderr, "Couldnot initialize the rwlock\n");
  }
 
  void destroyAllMutexes()
  {
    actOnMutexes(false);
+   if(pthread_rwlock_destroy(&rwlock) != 0)
+	fprintf(stderr, "Couldnot destroy the rwlock\n");
  }
 
  int generateAPeriodOfTime()
@@ -53,7 +57,11 @@ void actOnMutexes(bool initialize_option)
    return ( generated_rand % MAXIMUM_TIME_ALLOWED + 1);
  }
 
-
+//LOCKING HERE MAY CAUSE SERIOUS PROBLEMS BECAUSE YOU MAY BE IN A LOCK ALREADY
+//YOU ARE THE ONLY ONE CHANGING
  void SIG_INT_HANDLER(int sig) {
+   printf("\tOkay, we are wrapping up the simulation\n");
    should_run = false;
 }
+
+

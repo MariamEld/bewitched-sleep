@@ -12,6 +12,7 @@ int volatile chairs_occupied;
 sem_t chairs[NUMBER_CHAIRS];
 
 int volatile sids[NUMBER_CHAIRS];
+int volatile being_helped;
 sem_t students_ready;
 sem_t ta_finished_helping;
 bool volatile ta_busy;
@@ -25,4 +26,6 @@ sem_t* serveChair();
 //Initialize all semaphores
 void initialize_semaphores();
 
+//CAUTION: THIS FUNCTION MUST BE GUARDED BY STATE MUTEXES
+void writeStatusToFile();
 #endif

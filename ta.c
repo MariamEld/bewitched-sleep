@@ -26,9 +26,11 @@ void *ta_loop(void *param)
     break;
   }                 
   _sid = sids[chairs_front];
+  being_helped = _sid;
   _sem = serveChair();
   sem_post(_sem);                   //Come for help, dear student
   ta_busy = true;
+  writeStatusToFile();
   UNLOCK_STATE;                                   //unlocking mutex that protects the state of the chairs
   int _period = generateAPeriodOfTime();
   printf("[TA]: I am helping student #%d for time %d!\n", _sid, _period);

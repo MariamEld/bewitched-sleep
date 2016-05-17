@@ -19,9 +19,11 @@ void allocate(int _count)
 void init_()
 {
   LOCK_STATE;
+  render_row = -1;
   chairs_front = 0;
   chairs_rear = -1;
   chairs_occupied = 0;
+  being_helped = 0;
   should_run = true;
   seed_r = 42;
   ta_busy = false;
@@ -31,6 +33,9 @@ void init_()
 
 int main(int argc, char** argv)
 {
+  char opening_tag[10] = "<svg>";
+  char closing_tag[10] = "</svg>";
+
   if(argc != 2)
   {
     fprintf(stderr, "Invalid Parameters ... Exiting ...\n");
@@ -49,6 +54,14 @@ int main(int argc, char** argv)
     fprintf(stderr, "Invalid Student Count ... Exiting ...\n");
     exit(1);
   }
+  //Open file for writing
+  fp=fopen("sleeping-ta.svg", "w+");
+
+  //Though single thread but in case
+  pthread_rwlock_wrlock(&rwlock);
+  fwrite(opening_tag, sizeof(opening_tag[0]), strlen(opening_tag), fp);
+  pthread_rwlock_unlock(&rwlock);
+
   //Allocate and Initilaize Some things
   allocate(students_count);
   //Create TA ta_thread
@@ -72,5 +85,11 @@ UNLOCK_STATE;
   //Free memory
   free(students_);
   free(student_ids);
+  //Though single thread but in case
+  pthread_rwlock_wrlock(&rwlock);
+  fwrite(closing_tag, sizeof(closing_tag[0]), strlen(closing_tag), fp);
+  pthread_rwlock_unlock(&rwlock);
+  //Close
+  fclose(fp);
   exit(0);
 }

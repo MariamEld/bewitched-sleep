@@ -27,6 +27,7 @@ void *student_loop(void *param)
     }
     sem_post(&students_ready);
     sids[chairs_rear] = *_sid;
+    writeStatusToFile();
     UNLOCK_STATE;                                     //unlocking mutex that protects the state of the chairs
     sem_wait(_sem);
     printf("[#%d]: TA said he can help me!\n", *_sid);
