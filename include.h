@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/wait.h>
+
 #define NUMBER_CHAIRS 3
 
 
