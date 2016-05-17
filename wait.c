@@ -8,7 +8,7 @@ sem_t* reserveChair()
   }
   else
   {
-    chairs_rear = RES_CHAIRS_INDEX(chairs_rear + 1);
+    chairs_rear = (chairs_rear + 1) % NUMBER_CHAIRS;
     chairs_occupied++;
     return &chairs[chairs_rear];
   }
@@ -24,7 +24,7 @@ sem_t* serveChair()
   else
   {
     to_return = &chairs[chairs_front];
-    chairs_front = RES_CHAIRS_INDEX(chairs_front + 1);
+    chairs_front = (chairs_front + 1) % NUMBER_CHAIRS;
     chairs_occupied--;
     return to_return;
   }
@@ -32,11 +32,11 @@ sem_t* serveChair()
 
 void initialize_semaphores()
 {
+  sem_init(&students_ready, 0, 0);
   sem_init(&ta_finished_helping, 0, 0);
   int i;
   for(i = 0; i < NUMBER_CHAIRS; i++)
   {
     sem_init(&chairs[i], 0, 0);
-    sem_init(&chairs_turn[i], 0, 0);
   }
 }

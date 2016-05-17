@@ -18,11 +18,15 @@ void allocate(int _count)
 
 void init_()
 {
+  LOCK_STATE;
   chairs_front = 0;
   chairs_rear = -1;
   chairs_occupied = 0;
   should_run = true;
   seed_r = 42;
+  ta_busy = false;
+  really_stop_nothing_to_do = false;
+  UNLOCK_STATE;
 }
 
 int main(int argc, char** argv)
@@ -51,6 +55,11 @@ int main(int argc, char** argv)
   //Join threads
   for (i = 0; i < students_count; i++)
     pthread_join(students_[i], NULL);
+
+LOCK_STATE;
+sem_post(&students_ready);
+really_stop_nothing_to_do = true;
+UNLOCK_STATE;
 
   pthread_join(ta_, NULL);
   //Destroy ALl mutexes

@@ -10,10 +10,11 @@ int volatile chairs_rear;
 int volatile chairs_occupied;
 
 sem_t chairs[NUMBER_CHAIRS];
-sem_t chairs_turn[NUMBER_CHAIRS];
 
 int volatile sids[NUMBER_CHAIRS];
+sem_t students_ready;
 sem_t ta_finished_helping;
+bool volatile ta_busy;
 
 //Get a waiting chair to sit in
 sem_t* reserveChair();

@@ -21,6 +21,6 @@
 
 
 bool volatile should_run;
-
+bool volatile really_stop_nothing_to_do;
 
 #endif
