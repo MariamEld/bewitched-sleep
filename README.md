@@ -16,14 +16,16 @@ A C solution to the sleeping TA problem, a version of the sleeping barber proble
 Assumption: We assume that a first person arriving will sit on a chair and then immediately will be invited for help.
 
 ### Variables
-
+We use a mix of global mutexes, flags, locks and semaphoes to satisfy the previously mentioned requirments.
 #### Volatile Flags
 
 #### Mutexes
 
 #### Semaphores
-
-
+1. *Chairs*: We associate a semaphore with each chair. This association ensures that we can control the semaphore scheduling in a FIFO manner. Leaving it to the operating system does not guarantee a FIFO policy. When a **student** sits on a chair, they **wait** on the chair's corresponding semaphore. 
+2. *students_ready*:
+#### Read/Write Locks
+We use read/write locks to safely write to the SVG file that is shared by all the threads. Please see below for details.
 
 ## Build, Start and Terminate
 
@@ -37,9 +39,7 @@ To invoke the sleeping TA, you simply call the binary and pass the number of stu
 ./sleeping-ta
 ```
 To terminate the simulation safely, you pass a SIG_INT to the process. You can simply do so on your terminal if it is running in the foreground by simply pressing Ctrl + C.
-It is important to end the simulation safely to close file buffers, end threads safely and most important to let the students and TAs finish their jobs and not to interrupt programming, waiting, helping or sleeping(just kidding, a SIG_INT would awake the TA, so that he can catch his flight to Paris.)
-## SVG Rendering
-If you choose to have 3 waiting chairs, we can reward you with an elegant SVG rendering feature. After you halt the simulation, you just open the SVG file that will be created in the same folder. The file can have a relatively large height, so you may want to zoom in. Bonus Exercise: How many 42s are there in the SVG file?
+It is important to end the simulation safely to close file buffers, end threads safely and most importantly to let the students and TAs finish their jobs and not to interrupt programming, waiting, helping or sleeping(just kidding, a **SIG_INT would awake the TA, so that he can catch his flight to Paris.**)
 
 ## Thread Safety Concerns
 
@@ -58,7 +58,7 @@ LOCK_STATE; 				//#define LOCK_STATE pthread_mutex_lock(&CHAIR_STATE_MUTEX)
 //Change System State
 UNLOCK_STATE;				//#define UNLOCK_STATE pthread_mutex_unlock(&CHAIR_STATE_MUTEX)
 ```
-#### Examples of behaviors that must be guarded due to changing/reading the system state include
+#### Examples of behaviors that must be guarded due to changing/reading the system state include:
 1. (En/De)queing from/into the waiting queue
 2. Writing the waiting/helping information to files or to the screen
 3. Changing shared volatile flags/variables.
@@ -76,3 +76,19 @@ WRITE_WHAT_IN_BUFFER;
 pthread_rwlock_unlock(&rwlock);				//Release the lock on the file
 ```
 **The function ```writeStatusToFile()``` must be called while a mutex is locked. Writing to the file also requires locking and unlocking the file lock.**
+
+## SVG Rendering
+If you choose to have 3 waiting chairs, we can reward you with an elegant SVG rendering feature. After you halt the simulation, you just open the SVG file that will be created in the same folder. The file can have a relatively large height, so you may want to zoom in.
+
+**Bonus Exercise: How many 42s are there in the SVG file?**
+
+### Examples of the rendering:
+
+1. Red: Means not part of the queue.
+2. Yellow: Front and all in the queue
+3. Blue: Rear Element. In case of one element, the rear is the front and is colored yellow.
+4. Grey: TA Sleeping
+5. Green: TA Serving someone
+
+<img src="https://raw.githubusercontent.com/decltypeme/bewitched-sleep/master/examples/1.svg">
+<img src="https://raw.githubusercontent.com/decltypeme/bewitched-sleep/master/examples/2.svg">

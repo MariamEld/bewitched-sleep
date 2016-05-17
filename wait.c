@@ -57,6 +57,7 @@ void writeStatusToFile()
   char color2[10] = "red";
   char color3[10] = "grey";
   char color4[10] = "green";
+  char color5[10] = "blue";
   char* color = color3;
   if(ta_busy) 
    {
@@ -74,14 +75,16 @@ void writeStatusToFile()
 	sprintf(buf, "\t<g><circle cx=\"50\" cy=\"%d\" r=\"42\" stroke=\"black\" stroke-width=\"3\" fill=\"%s\" /><text x=\"50\" y=\"%d\" font-size=\"42\" text-anchor=\"middle\" >%d</text></g>", (100 * render_row + 50), color, (100 * render_row + 50), being_served);
 	WRITE_WHAT_IN_BUFFER;	
 	int i;
-	for(i = 0; i < 3; i++){
+	for(i = 0; i < NUMBER_CHAIRS; i++){
 	//The queue Circles
 	//choose the color
 	if(chairs_occupied == 0)
 		color = color2;
-	else if(chairs_occupied == 3)
+	else if(i == chairs_front)
 		color = color1;
-	else if(i == chairs_front || i == chairs_rear)
+	else if(i == chairs_rear)
+		color = color5;
+	else if(chairs_occupied == NUMBER_CHAIRS)
 		color = color1;
 	else
 		color = color2;
