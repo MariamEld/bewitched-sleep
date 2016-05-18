@@ -109,11 +109,11 @@ pthread_rwlock_unlock(&rwlock);				//Release the lock on the file
 To build, you either invoke build.sh or execute the following
 ```
 gcc *.c -pthread -o sleeping-ta
-chmod +x sleeping-ta 42
+chmod +x sleeping-ta
 ```
 To invoke the sleeping TA, you simply call the binary and pass the number of students
 ```
-./sleeping-ta
+./sleeping-ta 42
 ```
 To terminate the simulation safely, you pass a SIG_INT to the process. You can simply do so on your terminal if it is running in the foreground by simply pressing Ctrl + C.
 It is important to end the simulation safely to close file buffers, end threads safely and most importantly to let the students and TAs finish their jobs and not to interrupt programming, waiting, helping or sleeping(just kidding, a **SIG_INT would awake the TA, so that he can catch his flight to Paris.**)
