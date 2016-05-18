@@ -41,7 +41,7 @@ We use a mix of global mutexes, flags, locks and semaphores to satisfy the previ
 
 #### Semaphores
 
-All semaphores are initialized to a value of 1 to make sure wait is not encountered until a signal is issued.
+All semaphores are initialized to a value of 0 to make sure wait is not encountered until a signal is issued.
 
 1. ```Chairs```: We associate a semaphore with each chair. This association ensures that we can control the semaphore scheduling in a FIFO manner. Leaving it to the operating system does not guarantee a FIFO policy. When a **student** sits on a chair, they **wait** on the chair's corresponding semaphore. 
 2. ```students_ready```: A *student* *signals* this to the TA to let them know they need help if they either wait or arrive and they are sleeping. The TA sleeping means he is waiting on this signal. This signal is issued when SIG_INT is issued, but in a special manner by setting a volatile flag called ```really_stop_nothing_to_do```.
@@ -109,7 +109,7 @@ pthread_rwlock_unlock(&rwlock);				//Release the lock on the file
 To build, you either invoke build.sh or execute the following
 ```
 gcc *.c -pthread -o sleeping-ta
-chmod +x sleeping-ta
+chmod +x sleeping-ta 42
 ```
 To invoke the sleeping TA, you simply call the binary and pass the number of students
 ```
